@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="th" data-bg="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samsi — คู่สีสำหรับโลโก้เบอร์ 23</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{ --page:#F0EEE9; --card:#FFFFFF; --ink:#14161C; --muted:#4E5364; --line:#DCD8D0; }
+[data-bg="dark"]{ --page:#14161C; --card:#1C2029; --ink:#EDEFE9; --muted:#A2AAB8; --line:#2C323D; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--page);color:var(--ink);
+  font-family:'IBM Plex Sans Thai','Outfit',sans-serif;line-height:1.7;letter-spacing:0;
+  padding:26px 22px 60px;transition:background .2s,color .2s;}
+header{max-width:900px;margin:0 auto 20px;}
+h1{font-family:'Outfit',sans-serif;font-size:23px;font-weight:700;margin:0 0 6px;letter-spacing:-.02em;}
+header p{margin:0;color:var(--muted);font-size:14.5px;max-width:62ch;}
+.controls{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap;}
+button{font:inherit;font-size:14px;cursor:pointer;background:transparent;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:4px;padding:7px 14px;}
+button:hover{border-color:var(--ink);}
+button[aria-pressed="true"]{background:var(--ink);color:var(--page);border-color:var(--ink);}
+.sec{max-width:1180px;margin:30px auto 12px;font-family:'Outfit',sans-serif;font-size:14.5px;
+  font-weight:600;color:var(--muted);}
+.grid{max-width:1180px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:15px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px 16px 13px;
+  transition:background .2s,border-color .2s;}
+.mark{display:flex;align-items:center;gap:10px;min-height:54px;}
+.wm{font-family:'Outfit',sans-serif;font-weight:600;font-size:22px;letter-spacing:-.025em;}
+.pair{display:flex;gap:5px;margin-top:14px;}
+.pair span{flex:1;height:7px;border-radius:2px;}
+.hex{font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);margin-top:6px;}
+.meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--line);}
+.name{font-size:13px;color:var(--muted);}
+.flag{font-size:11.5px;color:var(--muted);opacity:.8;}
+.markonly .wm{display:none;}
+.markonly .mark{justify-content:center;}
+footer{max-width:900px;margin:32px auto 0;color:var(--muted);font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Samsi — คู่สีสำหรับโลโก้เบอร์ 23</h1>
+  <p>ชิปสีมีหูแมว 24 คู่สี ทุกคู่ตรวจแล้วว่าตัวชิปกับแถบล่างแยกกันออกอย่างน้อย 2.7:1 จึงไม่กลืนกันตอนย่อเล็ก กดปุ่มพื้นมืดเพื่อดูว่าคู่ไหนต้องใช้เวอร์ชันสลับสี</p>
+  <div class="controls">
+    <button id="bgBtn">พื้นมืด</button>
+    <button id="soloBtn" aria-pressed="false">ดูเฉพาะสัญลักษณ์</button>
+  </div>
+</header>
+
+<div class="sec" id="secA">ใช้ได้ทั้งพื้นสว่างและพื้นมืด</div>
+<div class="grid" id="gridA"></div>
+<div class="sec" id="secB">ต้องสลับสีเมื่ออยู่บนพื้นมืด</div>
+<div class="grid" id="gridB"></div>
+
+<footer>คู่ในกลุ่มล่างมีสีตัวชิปเข้มเกินกว่าจะวางบนพื้นมืดได้ตรง ๆ วิธีแก้คือสลับให้สีอ่อนเป็นตัวชิปแทน กดปุ่มพื้นมืดแล้วจะเห็นว่าสลับให้อัตโนมัติ นี่คือ inverse lockup ที่ต้องส่งมอบคู่กับโลโก้หลักอยู่แล้ว</footer>
+
+<script>
+// โลโก้เบอร์ 23 — ชิปสีมีหูแมว
+const mark=(a,b)=>`
+  <polygon points="9,20 11,4 24,16" fill="${a}"/>
+  <polygon points="39,20 37,4 24,16" fill="${a}"/>
+  <rect x="9" y="13" width="30" height="28" rx="7" fill="${a}"/>
+  <rect x="9" y="30" width="30" height="11" rx="5.5" fill="${b}"/>`;
+
+// [ชื่อ, สีชิป, สีแถบ, ต้องสลับบนพื้นมืด]
+const PAIRS=[
+ ['Russet / Cream','#8B4A33','#F0EEE9',0],
+ ['Rust / Sand','#A8412A','#E5D3B8',0],
+ ['Olive / Maize','#4A5D3A','#EBB13C',0],
+ ['Cobalt / Clay','#1E3FCB','#C89C8C',0],
+ ['Teal / Sand','#0E6E8C','#E5D3B8',0],
+ ['Cobalt / Maize','#1E3FCB','#EBB13C',0],
+ ['Green / Maize','#116B45','#EBB13C',0],
+ ['Olive / Blush','#4A5D3A','#E8C9C0',0],
+ ['Wine / Blush','#7A1F3D','#E8C9C0',0],
+ ['Magenta / Lilac','#C2185B','#C9C0E4',0],
+ ['Slate / Sand','#5B6478','#E5D3B8',0],
+ ['Coral / Forest','#E9654B','#1E3A2C',0],
+ ['Teal / Peach','#0E6E8C','#F0A07A',0],
+ ['Wine / Maize','#7A1F3D','#EBB13C',0],
+ ['Forest / Maize','#1E3A2C','#EBB13C',1],
+ ['Ink / Clay','#14161C','#C89C8C',1],
+ ['Navy / Coral','#17324E','#E9654B',1],
+ ['Ink / Sky','#14161C','#6E8CFF',1],
+ ['Forest / Mint','#1E3A2C','#7FC8A9',1],
+ ['Plum / Peach','#5B2C5F','#F0A07A',1],
+ ['Ink / Lilac','#14161C','#C9C0E4',1],
+ ['Ink / Cream','#14161C','#F0EEE9',1],
+ ['Ink / Lime','#14161C','#B8E62E',1],
+ ['Navy / Mint','#17324E','#7FC8A9',1]
+];
+
+const lum=h=>{h=h.replace('#','');
+  const c=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255)
+    .map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));
+  return .2126*c[0]+.7152*c[1]+.0722*c[2];};
+const cr=(x,y)=>{const l=[lum(x),lum(y)].sort((p,q)=>q-p);return ((l[0]+.05)/(l[1]+.05)).toFixed(1);};
+
+function card([name,a,b,inv],n,dark){
+  const A = (dark && inv) ? b : a;
+  const B = (dark && inv) ? a : b;
+  return `<div class="card">
+    <div class="mark">
+      <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}">${mark(A,B)}</svg>
+      <span class="wm">Samsi</span>
+    </div>
+    <div class="pair"><span style="background:${A}"></span><span style="background:${B}"></span></div>
+    <div class="hex">${A.toUpperCase()} · ${B.toUpperCase()}</div>
+    <div class="meta"><span class="name">${name}</span><span class="flag">แยกกัน ${cr(a,b)}:1</span></div>
+  </div>`;
+}
+
+function render(){
+  const dark=document.documentElement.getAttribute('data-bg')==='dark';
+  document.getElementById('gridA').innerHTML=
+    PAIRS.filter(p=>!p[3]).map((p,i)=>card(p,i,dark)).join('');
+  document.getElementById('gridB').innerHTML=
+    PAIRS.filter(p=>p[3]).map((p,i)=>card(p,i,dark)).join('');
+  document.getElementById('secB').textContent = dark
+    ? 'สลับสีแล้วสำหรับพื้นมืด' : 'ต้องสลับสีเมื่ออยู่บนพื้นมืด';
+  const solo=document.getElementById('soloBtn').getAttribute('aria-pressed')==='true';
+  document.querySelectorAll('.grid').forEach(g=>g.classList.toggle('markonly',solo));
+}
+
+document.getElementById('bgBtn').addEventListener('click',()=>{
+  const dark=document.documentElement.getAttribute('data-bg')==='dark';
+  document.documentElement.setAttribute('data-bg',dark?'light':'dark');
+  document.getElementById('bgBtn').textContent=dark?'พื้นมืด':'พื้นสว่าง';
+  render();
+});
+document.getElementById('soloBtn').addEventListener('click',()=>{
+  const on=document.getElementById('soloBtn').getAttribute('aria-pressed')==='true';
+  document.getElementById('soloBtn').setAttribute('aria-pressed',String(!on));
+  render();
+});
+render();
+</script>
+</body>
+</html>

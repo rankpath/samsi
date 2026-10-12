@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Samsi helps Thai business owners pick the colours for their own website. Describe the business and get a twelve-token colour system — surfaces, ink, states">
+<title>Samsi — colour systems for websites</title>
+<link rel="canonical" href="https://example.com/en/">
+<link rel="alternate" hreflang="th" href="https://example.com/th/">
+<link rel="alternate" hreflang="en" href="https://example.com/en/">
+<link rel="alternate" hreflang="x-default" href="https://example.com/en/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cpolygon%20points%3D%229%2C20%2011%2C4%2024%2C16%22%20fill%3D%22%23E9654B%22/%3E%3Cpolygon%20points%3D%2239%2C20%2037%2C4%2024%2C16%22%20fill%3D%22%23E9654B%22/%3E%3Crect%20x%3D%229%22%20y%3D%2213%22%20width%3D%2230%22%20height%3D%2228%22%20rx%3D%227%22%20fill%3D%22%23E9654B%22/%3E%3Crect%20x%3D%229%22%20y%3D%2230%22%20width%3D%2230%22%20height%3D%2211%22%20rx%3D%225.5%22%20fill%3D%22%231E3A2C%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;600;700&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,600;12..96,75..100,800&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#F0EEE9; --raised:#FFFFFF; --sunken:#E6E3DC; --border:#D6D2C8;
+  --ink:#14161C; --muted:#4E5364; --accent:#1E3FCB; --quiet:#E2E6F7; --accent-text:#FFFFFF;
+  --shift:200ms cubic-bezier(.2,.7,.3,1);
+  --lead:1.58; --display-track:-.03em; --display-lead:1.02;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--surface); color:var(--ink);
+  font-family:'Inter Tight',system-ui,sans-serif; font-size:16.5px; line-height:var(--lead);
+  -webkit-font-smoothing:antialiased;
+  transition:background var(--shift),color var(--shift);
+}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;
+  letter-spacing:var(--display-track);line-height:var(--display-lead);margin:0;}
+p{margin:0;}
+a{color:var(--accent-ink);text-decoration:none;border-bottom:1.5px solid currentColor;}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:2px;}
+
+/* ---------- Thai overrides ---------- */
+html[lang="th"]{--lead:1.8;--display-track:0;--display-lead:1.28;}
+html[lang="th"] body{font-family:'IBM Plex Sans Thai','Noto Sans Thai',sans-serif;font-size:17.5px;letter-spacing:0;}
+html[lang="th"] h1,html[lang="th"] h2,html[lang="th"] h3{font-family:'Anuphan',sans-serif;font-weight:700;letter-spacing:0;}
+html[lang="th"] .wordmark{font-family:'Bricolage Grotesque',sans-serif;}
+html[lang="th"] .hex,html[lang="th"] .ratio,html[lang="th"] .pv-code{font-family:'Inter Tight',sans-serif;}
+html[lang="th"] .ratio{letter-spacing:-.03em;}
+html[lang="th"] .btn,html[lang="th"] .chip,html[lang="th"] .cat,html[lang="th"] .pv-btn{letter-spacing:0;}
+
+.shell{max-width:1160px;margin:0 auto;padding:0 28px;}
+
+/* ---------- masthead ---------- */
+.mast{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:26px 0 0;flex-wrap:wrap;}
+.wordmark{display:flex;align-items:center;gap:11px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.04em;}
+.logo{display:block;flex:none;}   /* brand mark keeps its own colours in every theme */
+.mast-right{display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.mast nav{display:flex;gap:22px;font-size:14.5px;color:var(--muted);}
+.mast nav a{color:inherit;border:none;}
+.mast nav a:hover{color:var(--ink);}
+.langlink{
+  font-size:14px;font-weight:500;color:var(--muted);border:1.5px solid var(--border);
+  border-radius:2px;padding:6px 13px;text-decoration:none;transition:all 140ms;
+}
+.langlink:hover{color:var(--ink);border-color:var(--ink);}
+.langsw{display:flex;border:1.5px solid var(--border);border-radius:2px;overflow:hidden;transition:border-color var(--shift);}
+.langsw button{
+  font:inherit;font-size:14px;font-weight:500;cursor:pointer;border:none;background:transparent;
+  color:var(--muted);padding:6px 13px;transition:background 140ms,color 140ms;
+}
+.langsw button[aria-pressed="true"]{background:var(--ink);color:var(--surface);}
+.langsw button:first-child{font-family:'IBM Plex Sans Thai',sans-serif;}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;padding:72px 0 26px;align-items:start;}
+.hero h1{font-size:clamp(40px,6vw,78px);}
+.hero h1 span{display:block;color:var(--accent);transition:color var(--shift);}
+.lede{margin-top:26px;font-size:19px;color:var(--muted);max-width:46ch;}
+html[lang="th"] .lede{font-size:18px;max-width:42ch;}
+.hero-actions{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;}
+.btn{font:inherit;font-weight:600;font-size:15.5px;border:none;cursor:pointer;
+  padding:13px 22px;border-radius:3px;background:var(--accent);color:var(--accent-text);
+  transition:background var(--shift),color var(--shift),transform 120ms;}
+.btn:hover{transform:translateY(-1px);}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border);}
+.btn.ghost:hover{border-color:var(--accent);}
+
+.stack{border:1.5px solid var(--border);background:var(--raised);transition:background var(--shift),border-color var(--shift);}
+.band{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  padding:15px 18px;font-size:13.5px;font-weight:500;transition:background var(--shift),color var(--shift);}
+.band .role{opacity:.85;}
+.band .hex{font-variant-numeric:tabular-nums;font-weight:600;}
+.stack-foot{padding:14px 18px;border-top:1.5px solid var(--border);font-size:13px;
+  color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+/* ---------- rail ---------- */
+.rail-wrap{padding:14px 0 54px;}
+.rail-label{font-size:13.5px;color:var(--muted);margin-bottom:12px;}
+.rail{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{cursor:pointer;border:1.5px solid var(--border);background:var(--raised);font:inherit;font-size:14px;
+  color:var(--ink);padding:8px 14px 8px 10px;border-radius:2px;display:flex;align-items:center;gap:9px;
+  transition:border-color 140ms,background 140ms;}
+.chip:hover{border-color:var(--ink);}
+.chip[aria-pressed="true"]{border-color:var(--accent);border-width:2px;padding:7px 13px 7px 9px;background:var(--quiet);}
+.chip i{width:15px;height:15px;border-radius:50%;display:block;}
+
+/* ---------- sections ---------- */
+section{padding:60px 0;border-top:1.5px solid var(--border);transition:border-color var(--shift);}
+.sec-head{max-width:58ch;margin-bottom:34px;}
+.sec-head h2{font-size:clamp(27px,3.4vw,40px);}
+.sec-head p{margin-top:14px;color:var(--muted);}
+
+.meters{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;}
+.meter{border:1.5px solid var(--border);padding:17px 18px;background:var(--raised);transition:background var(--shift),border-color var(--shift);}
+.meter .pair{font-size:13.5px;color:var(--muted);}
+.meter .ratio{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:34px;
+  letter-spacing:-.03em;margin-top:5px;font-variant-numeric:tabular-nums;line-height:1.1;}
+.verdict{font-size:12.5px;font-weight:600;margin-top:4px;display:inline-block;padding:2px 8px;border-radius:2px;}
+.pass{background:#DCEFE3;color:#11543A;} .warn{background:#FAEBD2;color:#6B4A0B;} .fail{background:#F7DEDB;color:#8A1F1A;}
+.bar{height:5px;background:var(--sunken);margin-top:12px;position:relative;overflow:hidden;}
+.bar i{position:absolute;inset:0 auto 0 0;background:var(--accent);transition:width 260ms ease,background var(--shift);}
+
+.cats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;}
+.cat{cursor:pointer;font:inherit;font-size:14px;padding:7px 13px;border-radius:2px;
+  border:1.5px solid var(--border);background:transparent;color:var(--muted);transition:all 140ms;}
+.cat:hover{color:var(--ink);border-color:var(--ink);}
+.cat[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface);}
+.preview{display:grid;grid-template-columns:1.1fr 1fr;border:1.5px solid var(--border);transition:border-color var(--shift);}
+.pv-site{padding:34px 32px;transition:background var(--shift),color var(--shift);}
+.pv-site h3{font-size:26px;margin-bottom:11px;}
+.pv-site .pv-sub{font-size:14.5px;margin-bottom:20px;opacity:.82;max-width:36ch;}
+.pv-btn{display:inline-block;padding:11px 19px;border-radius:3px;font-size:14.5px;font-weight:600;}
+.pv-note{margin-top:22px;font-size:12.5px;opacity:.7;max-width:40ch;}
+.pv-code{padding:28px 30px;background:var(--sunken);font-size:13.2px;line-height:1.85;transition:background var(--shift);}
+.pv-code .k{color:var(--muted);}
+.pv-code .row{display:flex;justify-content:space-between;gap:16px;border-bottom:1px dotted var(--border);padding:2px 0;}
+.pv-code .sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:7px;vertical-align:-1px;border:1px solid rgba(0,0,0,.14);}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:26px;}
+.step{padding-top:16px;border-top:3px solid var(--accent);transition:border-color var(--shift);}
+.step .n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:14px;color:var(--accent-ink);transition:color var(--shift);}
+html[lang="th"] .step .n{font-family:'Anuphan',sans-serif;}
+.step h3{font-size:19px;margin:7px 0 8px;}
+.step p{font-size:14.5px;color:var(--muted);}
+
+.cta{background:var(--accent);color:var(--accent-text);padding:56px 46px;margin:66px 0 0;transition:background var(--shift),color var(--shift);}
+.cta h2{font-size:clamp(28px,4vw,46px);max-width:20ch;}
+.cta p{margin-top:16px;opacity:.88;max-width:48ch;}
+.cta .btn{background:var(--accent-text);color:var(--accent);margin-top:28px;}
+
+footer{padding:34px 0 56px;font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+
+@keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.reveal{animation:rise .62s cubic-bezier(.2,.7,.3,1) backwards;animation-delay:calc(var(--i)*70ms);}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}html{scroll-behavior:auto;}}
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr;gap:38px;padding-top:44px;}
+  .preview{grid-template-columns:1fr;}
+  .cta{padding:40px 26px;}
+  .shell{padding:0 20px;}
+  .mast nav{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <header class="mast">
+    <div class="wordmark"><svg class="logo" width="23" height="23" viewBox="0 0 48 48" aria-hidden="true"><polygon points="9,20 11,4 24,16" fill="#E9654B"/><polygon points="39,20 37,4 24,16" fill="#E9654B"/><rect x="9" y="13" width="30" height="28" rx="7" fill="#E9654B"/><rect x="9" y="30" width="30" height="11" rx="5.5" fill="#1E3A2C"/></svg>Samsi</div>
+    <div class="mast-right">
+      <nav>
+        <a href="#check" data-t="navContrast">Contrast</a>
+        <a href="#categories" data-t="navCats">Categories</a>
+        <a href="#how" data-t="navHow">How it works</a>
+      </nav>
+      <a class="langlink" href="../th/index.html" hreflang="th" lang="th">ไทย</a>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1 class="reveal" style="--i:0"><span data-t="h1a" style="display:block;color:inherit">Every colour on this page</span><span id="heroLine"></span></h1>
+      <p class="lede reveal" style="--i:1" data-t="lede">Samsi helps Thai business owners pick the colours for their own website. Describe the business and get a twelve-token colour system — surfaces, ink, states, and one accent — with the contrast already proven. No design background needed.</p>
+      <div class="hero-actions reveal" style="--i:2">
+        <button class="btn" id="ctaTop" data-t="ctaBtn">Generate a system</button>
+        <button class="btn ghost" id="randomBtn" data-t="randomBtn">Surprise me</button>
+      </div>
+    </div>
+
+    <div class="stack reveal" style="--i:3" id="stack" aria-live="polite">
+      <div class="stack-foot">
+        <span id="themeName">Signal</span>
+        <span id="themeOrigin"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rail-wrap">
+    <div class="rail-label" data-t="railLabel">Themes built from the 2026–27 forecast</div>
+    <div class="rail" id="rail" role="group" aria-label="Themes"></div>
+  </div>
+</div>
+
+<div class="shell">
+  <section id="check">
+    <div class="sec-head">
+      <h2 data-t="s1h">Contrast is checked before you ever see the palette</h2>
+      <p data-t="s1p">These four ratios update with the theme. A system that fails them is not a style choice, it is a bug — so Samsi adjusts lightness and keeps the hue rather than handing you something you cannot ship.</p>
+    </div>
+    <div class="meters" id="meters"></div>
+  </section>
+
+  <section id="categories">
+    <div class="sec-head">
+      <h2 data-t="s2h">It already knows what your industry looks like</h2>
+      <p data-t="s2p">A clinic and a gaming studio need opposite things from the same engine. Pick a category to see the system Samsi would open with.</p>
+    </div>
+    <div class="cats" id="cats" role="group" aria-label="Categories"><button class="cat" data-i="0" aria-pressed="false">Dental clinic</button><button class="cat" data-i="1" aria-pressed="false">Aesthetic clinic</button><button class="cat" data-i="2" aria-pressed="true">Pet clinic</button><button class="cat" data-i="3" aria-pressed="false">Coffee shop</button><button class="cat" data-i="4" aria-pressed="false">Restaurant</button><button class="cat" data-i="5" aria-pressed="false">Online shop</button><button class="cat" data-i="6" aria-pressed="false">Gold shop</button><button class="cat" data-i="7" aria-pressed="false">Toy shop</button><button class="cat" data-i="8" aria-pressed="false">Photo studio</button><button class="cat" data-i="9" aria-pressed="false">Tutoring school</button><button class="cat" data-i="10" aria-pressed="false">Fitness &amp; yoga</button><button class="cat" data-i="11" aria-pressed="false">Homestay</button><button class="cat" data-i="12" aria-pressed="false">Property agent</button><button class="cat" data-i="13" aria-pressed="false">Accounting firm</button><button class="cat" data-i="14" aria-pressed="false">Financial advisor</button><button class="cat" data-i="15" aria-pressed="false">Logistics</button><button class="cat" data-i="16" aria-pressed="false">Phone repair</button><button class="cat" data-i="17" aria-pressed="false">Gaming cafe</button></div>
+    <div class="preview">
+      <div class="pv-site" id="pvSite">
+        <h3 id="pvTitle"></h3>
+        <p class="pv-sub" id="pvSub"></p>
+        <span class="pv-btn" id="pvBtn"></span>
+        <p class="pv-note" id="pvNote"></p>
+      </div>
+      <div class="pv-code" id="pvCode"></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="sec-head">
+      <h2 data-t="s3h">Four steps, in this order, every time</h2>
+      <p data-t="s3p">The order is the method. Starting from the accent is why most palettes collapse the moment real content arrives.</p>
+    </div>
+    <div class="steps" id="steps"><div class="step"><div class="n">Step 1</div><h3>Read the brief</h3><p>Category, audience, market, and the one action the page has to produce.</p></div><div class="step"><div class="n">Step 2</div><h3>Set the neutral</h3><p>Surfaces are 85% of the pixels, so they decide whether the site feels current.</p></div><div class="step"><div class="n">Step 3</div><h3>Add one accent</h3><p>Assigned to conversion and nothing else. Used on under a tenth of any screen.</p></div><div class="step"><div class="n">Step 4</div><h3>Prove and hand off</h3><p>Ratios computed, tokens named by role, exported as CSS, Tailwind, or a Canva brand kit.</p></div></div>
+  </section>
+</div>
+
+<div class="shell">
+  <div class="cta">
+    <h2 data-t="ctaH">Describe the business. Get the system.</h2>
+    <p data-t="ctaP">Free while in preview. Bring a logo and it will work around your existing colour instead of replacing it.</p>
+    <button class="btn" id="ctaBottom" data-t="ctaBtn">Generate a system</button>
+  </div>
+  <footer>
+    <span data-t="footA">Samsi — colour systems for websites</span>
+    <span data-t="footB">Themes reference the Pantone 2026 and WGSN × Coloro 2027 forecasts. Screen values are approximations.</span>
+  </footer>
+</div>
+
+<script>
+/* ---------------- colour maths ---------------- */
+const lum=h=>{h=h.replace('#','');
+  const c=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255).map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));
+  return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2];};
+const ratio=(a,b)=>{const l=[lum(a),lum(b)].sort((x,y)=>y-x);return (l[0]+0.05)/(l[1]+0.05);};
+const bestText=bg=>ratio('#FFFFFF',bg)>=ratio('#14161C',bg)?'#FFFFFF':'#14161C';
+
+/* ---------------- copy ---------------- */
+const T={
+ en:{
+  title:'Samsi — colour systems for websites',
+  navContrast:'Contrast',navCats:'Categories',navHow:'How it works',
+  h1a:'Every colour on this page',
+  lede:'Samsi helps Thai business owners pick the colours for their own website. Describe the business and get a twelve-token colour system — surfaces, ink, states, and one accent — with the contrast already proven. No design background needed.',
+  ctaBtn:'Generate a system', randomBtn:'Surprise me',
+  railLabel:'Themes built from the 2026–27 forecast',
+  s1h:'Contrast is checked before you ever see the palette',
+  s1p:'These four ratios update with the theme. A system that fails them is not a style choice, it is a bug — so Samsi adjusts lightness and keeps the hue rather than handing you something you cannot ship.',
+  s2h:'It already knows what your industry looks like',
+  s2p:'A clinic and a gaming studio need opposite things from the same engine. Pick a category to see the system Samsi would open with.',
+  s3h:'Four steps, in this order, every time',
+  s3p:'The order is the method. Starting from the accent is why most palettes collapse the moment real content arrives.',
+  ctaH:'Describe the business. Get the system.',
+  ctaP:'Free while in preview. Bring a logo and it will work around your existing colour instead of replacing it.',
+  footA:'Samsi — colour systems for websites',
+  footB:'Themes reference the Pantone 2026 and WGSN × Coloro 2027 forecasts. Screen values are approximations.',
+  meters:['Body text on surface','Muted text on surface','Button text on accent','Accent edge on surface'],
+  vPass:m=>'Passes '+m+':1', vWarn:'Large text only', vFail:m=>'Below '+m+':1',
+  steps:[['Step 1','Read the brief','Category, audience, market, and the one action the page has to produce.'],
+         ['Step 2','Set the neutral','Surfaces are 85% of the pixels, so they decide whether the site feels current.'],
+         ['Step 3','Add one accent','Assigned to conversion and nothing else. Used on under a tenth of any screen.'],
+         ['Step 4','Prove and hand off','Ratios computed, tokens named by role, exported as CSS, Tailwind, or a Canva brand kit.']],
+  bands:['Surface','Raised','Ink','Muted ink','Accent','Accent quiet'],
+  inkOn:'ink on surface', btnOn:'button text on accent'
+ },
+ th:{
+  title:'Samsi — ระบบสีสำหรับเว็บไซต์',
+  navContrast:'คอนทราสต์',navCats:'หมวดธุรกิจ',navHow:'วิธีทำงาน',
+  h1a:'ทุกสีบนหน้านี้',
+  lede:'Samsi ช่วยผู้ประกอบการไทยเลือกสีให้เว็บไซต์ของตัวเอง เล่าว่าธุรกิจคุณทำอะไร แล้วรับระบบสี 12 โทเคน ทั้งพื้นหลัง ตัวอักษร สถานะ และสีหลัก พร้อมตรวจค่าคอนทราสต์มาให้แล้ว ไม่ต้องเป็นดีไซเนอร์ก็ใช้ได้',
+  ctaBtn:'สร้างระบบสี', randomBtn:'สุ่มให้หน่อย',
+  railLabel:'ธีมที่สร้างจากการคาดการณ์สีปี 2026–27',
+  s1h:'ตรวจค่าคอนทราสต์ก่อนที่คุณจะได้เห็นพาเลตต์',
+  s1p:'ค่าทั้งสี่นี้เปลี่ยนตามธีม ระบบสีที่ไม่ผ่านเกณฑ์ไม่ใช่เรื่องรสนิยม แต่คือข้อผิดพลาด Samsi จึงปรับความสว่างโดยคงเฉดสีเดิมไว้ แทนที่จะส่งพาเลตต์ที่ใช้งานจริงไม่ได้ให้คุณ',
+  s2h:'รู้อยู่แล้วว่าธุรกิจของคุณควรมีหน้าตาแบบไหน',
+  s2p:'คลินิกกับสตูดิโอเกมต้องการคนละอย่างจากเอนจินตัวเดียวกัน เลือกหมวดธุรกิจเพื่อดูระบบสีที่ Samsi จะเริ่มให้',
+  s3h:'สี่ขั้นตอน เรียงลำดับนี้เสมอ',
+  s3p:'ลำดับคือวิธีการ การเริ่มจากสีหลักคือเหตุผลที่พาเลตต์ส่วนใหญ่พังทันทีที่เจอเนื้อหาจริง',
+  ctaH:'เล่าเรื่องธุรกิจของคุณ แล้วรับระบบสีกลับไป',
+  ctaP:'ใช้ฟรีในช่วงพรีวิว ถ้ามีโลโก้อยู่แล้ว ระบบจะออกแบบให้เข้ากับสีเดิม ไม่ใช่เปลี่ยนทิ้ง',
+  footA:'Samsi — ระบบสีสำหรับเว็บไซต์',
+  footB:'ธีมอ้างอิงการคาดการณ์สีจาก Pantone 2026 และ WGSN × Coloro 2027 ค่าสีบนหน้าจอเป็นค่าประมาณ',
+  meters:['ตัวอักษรเนื้อหาบนพื้นหลัง','ตัวอักษรรองบนพื้นหลัง','ตัวอักษรบนปุ่มสีหลัก','ขอบสีหลักบนพื้นหลัง'],
+  vPass:m=>'ผ่าน '+m+':1', vWarn:'ใช้ได้เฉพาะตัวใหญ่', vFail:m=>'ต่ำกว่า '+m+':1',
+  steps:[['ขั้นที่ 1','อ่านโจทย์','หมวดธุรกิจ กลุ่มเป้าหมาย ตลาด และการกระทำเดียวที่หน้านี้ต้องทำให้เกิดขึ้น'],
+         ['ขั้นที่ 2','ตั้งสีพื้นก่อน','พื้นหลังกินพื้นที่ราว 85% ของหน้าจอ จึงเป็นตัวตัดสินว่าเว็บดูร่วมสมัยหรือไม่'],
+         ['ขั้นที่ 3','ใส่สีหลักหนึ่งสี','ใช้กับปุ่มที่ต้องการให้คนกดเท่านั้น และไม่เกินหนึ่งในสิบของพื้นที่หน้าจอ'],
+         ['ขั้นที่ 4','พิสูจน์แล้วส่งมอบ','คำนวณค่าคอนทราสต์ ตั้งชื่อโทเคนตามหน้าที่ ส่งออกเป็น CSS, Tailwind หรือ Brand Kit ของ Canva']],
+  bands:['พื้นหลัง','พื้นยกระดับ','ตัวอักษร','ตัวอักษรรอง','สีหลัก','สีหลักแบบจาง'],
+  inkOn:'ตัวอักษรบนพื้นหลัง', btnOn:'ตัวอักษรบนปุ่ม'
+ }
+};
+
+/* ---------------- themes ---------------- */
+const THEMES=[
+ {name:'Samsi',origin:{en:'Samsi brand colours',th:'สีประจำแบรนด์ Samsi'},
+  line:{en:'is this brand, actually.',th:'คือสีของแบรนด์นี้เอง'},
+  surface:'#FAF8F4',raised:'#FFFFFF',sunken:'#EFEBE3',border:'#DFDAD0',ink:'#1E3A2C',muted:'#464E45',accent:'#E9654B',quiet:'#FBE3DC'},
+ {name:'Signal',origin:{en:'Cloud Dancer + Luminous Blue',th:'Cloud Dancer + Luminous Blue'},
+  line:{en:'came from one prompt.',th:'มาจากพรอมต์เดียว'},
+  surface:'#F0EEE9',raised:'#FFFFFF',sunken:'#E6E3DC',border:'#D6D2C8',ink:'#14161C',muted:'#4E5364',accent:'#1E3FCB',quiet:'#E2E6F7'},
+ {name:'Grounded',origin:{en:'Russet, A/W 27–28',th:'Russet คอลเลกชัน A/W 27–28'},
+  line:{en:'is a single decision.',th:'มาจากการตัดสินใจครั้งเดียว'},
+  surface:'#F7F2EE',raised:'#FFFDFB',sunken:'#EDE3DC',border:'#DED0C6',ink:'#231A18',muted:'#63534C',accent:'#8B4A33',quiet:'#EEE1DA'},
+ {name:'Nightfall',origin:{en:'Deep Green as the new black',th:'Deep Green แทนที่สีดำ'},
+  line:{en:'rebuilt, not inverted.',th:'สร้างใหม่ ไม่ใช่แค่กลับสี'},
+  surface:'#1E3A2C',raised:'#244736',sunken:'#182F24',border:'#31553F',ink:'#EDEFE9',muted:'#AEB8AB',accent:'#EBB13C',quiet:'#2A4A39'},
+ {name:'Studio',origin:{en:'Peaceful Lilac + Pop Pink',th:'Peaceful Lilac + Pop Pink'},
+  line:{en:'stays legible anyway.',th:'ก็ยังอ่านง่ายอยู่ดี'},
+  surface:'#F4F2F7',raised:'#FFFFFF',sunken:'#E9E5F1',border:'#D8D2E4',ink:'#1B1726',muted:'#5C566C',accent:'#C2185B',quiet:'#F7E1EC'},
+ {name:'Market',origin:{en:'Energy Orange, S/S 27',th:'Energy Orange คอลเลกชัน S/S 27'},
+  line:{en:'earns its loudness.',th:'ดังได้อย่างมีเหตุผล'},
+  surface:'#FBF8F4',raised:'#FFFFFF',sunken:'#F1EAE1',border:'#E0D5C8',ink:'#1F1A17',muted:'#635951',accent:'#C2410C',quiet:'#FBE6DB'},
+ {name:'Terminal',origin:{en:'Neon as micro-accent',th:'นีออนใช้เป็นจุดเน้นเล็ก ๆ'},
+  line:{en:'survives dark mode.',th:'รอดได้ในโหมดมืด'},
+  surface:'#101317',raised:'#171B21',sunken:'#0A0D10',border:'#2A2F36',ink:'#E9EBE6',muted:'#959BA2',accent:'#B8E62E',quiet:'#1C2418'},
+ {name:'Meadow',origin:{en:'Meadowland Green, S/S 27',th:'Meadowland Green คอลเลกชัน S/S 27'},
+  line:{en:'reads calm on purpose.',th:'ดูสงบอย่างตั้งใจ'},
+  surface:'#F7F4EE',raised:'#FFFFFF',sunken:'#EBE6DB',border:'#DBD4C5',ink:'#1A211A',muted:'#535A51',accent:'#4E7238',quiet:'#E4EADF'}
+];
+
+/* ---------------- categories ---------------- */
+const CATS=[
+ {c:{en:'Dental clinic',th:'คลินิกทันตกรรม'},t:{en:'Smile House Dental',th:'คลินิกทันตกรรมสไมล์เฮ้าส์'},
+  s:{en:'Check-ups, braces and implants. Open Tuesday to Sunday.',th:'ตรวจฟัน จัดฟัน รากฟันเทียม เปิดอังคารถึงอาทิตย์'},
+  b:{en:'Book a dentist',th:'นัดหมายทันตแพทย์'},n:{en:'Deep teal reads clinical without the spa cliché of pale mint.',th:'เขียวน้ำทะเลเข้มให้ความรู้สึกทางการแพทย์ โดยไม่ตกไปเป็นโทนสปาแบบมิ้นต์อ่อน'},
+  surface:'#F6F4F0',ink:'#16211E',muted:'#4F5B58',accent:'#1B6B63',quiet:'#DCEAE7'},
+ {c:{en:'Aesthetic clinic',th:'คลินิกความงาม'},t:{en:'Sathorn Aesthetic Studio',th:'สาทร เอสเทติก สตูดิโอ'},
+  s:{en:'Injectables and laser, planned over one unhurried appointment.',th:'ฉีดสารเติมเต็มและเลเซอร์ วางแผนร่วมกับแพทย์ในนัดเดียวแบบไม่เร่ง'},
+  b:{en:'Request a plan',th:'ขอแผนการรักษา'},n:{en:'Russet instead of gold — gold gradients read as a luxury claim to regulators.',th:'ใช้น้ำตาลแดงแทนทอง ไล่เฉดสีทองอาจถูกตีความว่าเป็นการอวดอ้าง'},
+  surface:'#F7F2EE',ink:'#231A18',muted:'#63534C',accent:'#8B4A33',quiet:'#EEE1DA'},
+ {c:{en:'Pet clinic',th:'คลินิกสัตว์เลี้ยง'},t:{en:'Baan Mor Ma Pet Clinic',th:'คลินิกสัตว์เลี้ยงบ้านหมอหมา'},
+  s:{en:'Vaccinations, neutering and night emergencies.',th:'ฉีดวัคซีน ทำหมัน รับเคสฉุกเฉินกลางคืน'},
+  b:{en:'Book a visit',th:'จองคิวพาน้องมา'},n:{en:'Green reads as care and recovery; the accent is reserved for booking.',th:'เขียวให้ความรู้สึกดูแลและฟื้นฟู สีหลักสงวนไว้ให้ปุ่มจองเท่านั้น'},
+  surface:'#F7F4EE',ink:'#1A211A',muted:'#535A51',accent:'#4E7238',quiet:'#E4EADF'},
+ {c:{en:'Coffee shop',th:'ร้านกาแฟ'},t:{en:'Rim Khlong Coffee',th:'ริมคลอง คอฟฟี่'},
+  s:{en:'Single-origin beans roasted weekly, in an old shophouse.',th:'เมล็ดคั่วใหม่ทุกสัปดาห์ ในตึกแถวเก่าริมคลอง'},
+  b:{en:'See the menu',th:'ดูเมนู'},n:{en:'Appetite colours are warm and slightly dirty, never neon.',th:'สีที่กระตุ้นความอยากอาหารต้องอุ่นและหม่นนิด ไม่ใช่สีนีออน'},
+  surface:'#FAF5EC',ink:'#231A12',muted:'#63543F',accent:'#A6361F',quiet:'#F4E0D8'},
+ {c:{en:'Restaurant',th:'ร้านอาหาร'},t:{en:'Krua Pa Nid',th:'ครัวป้านิด'},
+  s:{en:'Southern Thai cooking, one menu, changed every week.',th:'อาหารใต้รสจัด เมนูเดียว เปลี่ยนทุกสัปดาห์'},
+  b:{en:'Book a table',th:'จองโต๊ะ'},n:{en:'Interface recedes so the food photography carries the saturation.',th:'อินเทอร์เฟซถอยไปด้านหลัง ให้ภาพอาหารเป็นตัวแบกความสดของสี'},
+  surface:'#F0EEE9',ink:'#111111',muted:'#514E4A',accent:'#B33A2B',quiet:'#F2DFD9'},
+ {c:{en:'Online shop',th:'ร้านขายของออนไลน์'},t:{en:'Khong Dee Store',th:'ร้านของดีบ้านเรา'},
+  s:{en:'Local craft goods, packed and shipped the day you order.',th:'สินค้าหัตถกรรมท้องถิ่น แพ็กและส่งวันที่สั่ง'},
+  b:{en:'Add to cart',th:'สั่งซื้อ'},n:{en:'Orange darkened until white button text clears 5:1.',th:'ปรับส้มให้เข้มขึ้นจนตัวอักษรขาวบนปุ่มผ่าน 5:1'},
+  surface:'#FBF8F4',ink:'#1F1A17',muted:'#635951',accent:'#C2410C',quiet:'#FBE6DB'},
+ {c:{en:'Gold shop',th:'ร้านทอง'},t:{en:'Thong Charoensuk',th:'ทองเจริญสุข'},
+  s:{en:'Gold by the baht weight, with today\'s price on the board.',th:'ทองรูปพรรณชั่งน้ำหนักบาท พร้อมราคาประจำวันหน้าร้าน'},
+  b:{en:'Make an appointment',th:'นัดเข้าชม'},n:{en:'Deep green as the new black, with maize doing the work of metal.',th:'เขียวเข้มทำหน้าที่แทนสีดำ ส่วนเหลืองข้าวโพดทำหน้าที่แทนโลหะ'},
+  surface:'#1E3A2C',ink:'#EDEFE9',muted:'#AEB8AB',accent:'#EBB13C',quiet:'#2A4A39'},
+ {c:{en:'Toy shop',th:'ร้านของเล่นเด็ก'},t:{en:'Klong Sanuk',th:'ร้านกล่องสนุก'},
+  s:{en:'Weekly activity kits for five to nine year olds.',th:'ชุดกิจกรรมรายสัปดาห์สำหรับเด็ก 5–9 ขวบ'},
+  b:{en:'Start a subscription',th:'เริ่มสมัครรายเดือน'},n:{en:'Bright colour lives in the illustration. Parents read the text.',th:'สีสดอยู่ในภาพประกอบ ส่วนคนที่อ่านตัวอักษรจริง ๆ คือพ่อแม่'},
+  surface:'#FFF9EF',ink:'#26201A',muted:'#61574E',accent:'#26688F',quiet:'#DCE8EF'},
+ {c:{en:'Photo studio',th:'สตูดิโอถ่ายภาพ'},t:{en:'Filmhouse Studio',th:'ฟิล์มเฮ้าส์ สตูดิโอ'},
+  s:{en:'Portraits, product shots and graduation sets.',th:'ถ่ายพอร์ตเทรต ถ่ายสินค้า และชุดรับปริญญา'},
+  b:{en:'Book a session',th:'จองคิวถ่าย'},n:{en:'Pink at full strength for display type, darkened wherever text sits on it.',th:'ใช้ชมพูเต็มความสดกับตัวอักษรใหญ่ และปรับเข้มลงทุกจุดที่มีตัวอักษรทับ'},
+  surface:'#F4F2F7',ink:'#1B1726',muted:'#5C566C',accent:'#C2185B',quiet:'#F7E1EC'},
+ {c:{en:'Tutoring school',th:'โรงเรียนกวดวิชา'},t:{en:'Lat Phrao Tutor',th:'ติวเตอร์ลาดพร้าว'},
+  s:{en:'Evening courses, taught live, twenty seats per class.',th:'คอร์สภาคค่ำ สอนสด รับรุ่นละ 20 ที่นั่ง'},
+  b:{en:'See the schedule',th:'ดูตารางเรียน'},n:{en:'Progress bars stay in the accent so progress is the loudest signal.',th:'แถบความคืบหน้าใช้สีหลัก เพื่อให้ความคืบหน้าเป็นสัญญาณที่เด่นที่สุด'},
+  surface:'#FAF7F1',ink:'#1B1A17',muted:'#57534B',accent:'#2F5FD0',quiet:'#E2E8F8'},
+ {c:{en:'Fitness & yoga',th:'ฟิตเนส และโยคะ'},t:{en:'Still Hours Studio',th:'สตูดิโอลมหายใจ'},
+  s:{en:'Small-group classes and recovery sessions, morning and evening.',th:'คลาสกลุ่มเล็กและคลาสฟื้นฟูร่างกาย รอบเช้าและเย็น'},
+  b:{en:'Reserve a mat',th:'จองคลาส'},n:{en:'Patina blue-green, because sage has become the template default.',th:'ใช้เขียวอมฟ้าโทนสนิม เพราะสีเสจกลายเป็นค่าเริ่มต้นของเทมเพลตไปแล้ว'},
+  surface:'#F2F0EA',ink:'#1D231C',muted:'#535A4F',accent:'#3F686D',quiet:'#E0E7E7'},
+ {c:{en:'Homestay',th:'ที่พัก และโฮมสเตย์'},t:{en:'Baan Rim Lay',th:'บ้านริมเล'},
+  s:{en:'Six rooms facing the water, breakfast included.',th:'หกห้องนอนหันหน้าออกทะเล พร้อมอาหารเช้า'},
+  b:{en:'Check availability',th:'เช็กห้องว่าง'},n:{en:'Deep sea blue, not sky blue — sky blue never passes contrast on white.',th:'ใช้น้ำเงินทะเลลึกแทนฟ้าอ่อน เพราะฟ้าอ่อนไม่เคยผ่านคอนทราสต์บนพื้นขาว'},
+  surface:'#F4F1EC',ink:'#12212B',muted:'#4C5A63',accent:'#1B6B8C',quiet:'#DCE8ED'},
+ {c:{en:'Property agent',th:'นายหน้าอสังหาฯ'},t:{en:'Meridian Property',th:'เมอริเดียน พร็อพเพอร์ตี้'},
+  s:{en:'Renovated condos listed with full inspection reports.',th:'คอนโดรีโนเวต พร้อมรายงานตรวจสภาพฉบับเต็ม'},
+  b:{en:'Arrange a viewing',th:'นัดดูห้อง'},n:{en:'The photos are the design here; the palette stays out of their way.',th:'ในหมวดนี้ภาพคืองานออกแบบ พาเลตต์มีหน้าที่หลบให้ภาพ'},
+  surface:'#F6F5F2',ink:'#141A1F',muted:'#525B61',accent:'#2F4A6B',quiet:'#E2E7EE'},
+ {c:{en:'Accounting firm',th:'สำนักงานบัญชี'},t:{en:'Bancha Munkong',th:'สำนักงานบัญชีมั่นคง'},
+  s:{en:'Monthly bookkeeping and tax filing for small businesses.',th:'ทำบัญชีรายเดือนและยื่นภาษีให้ธุรกิจขนาดเล็ก'},
+  b:{en:'Request a quote',th:'ขอใบเสนอราคา'},n:{en:'Muted olive instead of the expected navy — same authority, more memorable.',th:'ใช้เขียวมะกอกหม่นแทนน้ำเงินกรมท่าที่ใคร ๆ ก็ใช้ น่าเชื่อถือเท่ากันแต่จำได้มากกว่า'},
+  surface:'#F6F5F1',ink:'#14181C',muted:'#4E545A',accent:'#4A5D3A',quiet:'#E4E8DE'},
+ {c:{en:'Financial advisor',th:'ที่ปรึกษาการเงิน'},t:{en:'Plan Dee',th:'แพลนดี ที่ปรึกษาการเงิน'},
+  s:{en:'Retirement and insurance planning, fee-based, no commission.',th:'วางแผนเกษียณและประกัน คิดค่าบริการเป็นรายครั้ง ไม่กินคอมมิชชั่น'},
+  b:{en:'Book a consultation',th:'นัดปรึกษา'},n:{en:'The one category where a cool neutral still reads as precision.',th:'หมวดเดียวที่สีกลางโทนเย็นยังให้ความรู้สึกแม่นยำอยู่'},
+  surface:'#F5F6F8',ink:'#0E1726',muted:'#4F596B',accent:'#1E3FCB',quiet:'#E3E7F6'},
+ {c:{en:'Logistics',th:'ขนส่ง'},t:{en:'Song Wai Logistics',th:'ส่งไว โลจิสติกส์'},
+  s:{en:'Same-day delivery across Bangkok, cash on delivery available.',th:'ส่งด่วนในกรุงเทพฯ ภายในวัน รับเก็บเงินปลายทาง'},
+  b:{en:'Check a rate',th:'เช็กค่าส่ง'},n:{en:'Warm-grey surface stops a data-heavy page feeling like every other one.',th:'พื้นเทาอมอุ่นช่วยให้หน้าที่ข้อมูลแน่นไม่ดูเหมือนเจ้าอื่นทั้งหมด'},
+  surface:'#F7F6F3',ink:'#12151C',muted:'#4E5364',accent:'#1E3FCB',quiet:'#E4E7F7'},
+ {c:{en:'Phone repair',th:'ร้านซ่อมมือถือ'},t:{en:'Fix IT',th:'ฟิกซ์ไอที'},
+  s:{en:'Screen and battery replacement while you wait.',th:'เปลี่ยนจอและแบตเตอรี่ รอรับได้เลย'},
+  b:{en:'Check a price',th:'เช็กราคาซ่อม'},n:{en:'Dark text on the lime — white on lime sits at 1.5:1 and always will.',th:'ใช้ตัวอักษรสีเข้มบนพื้นเขียวมะนาว ตัวอักษรขาวได้แค่ 1.5:1 ซึ่งไม่มีวันผ่าน'},
+  surface:'#101317',ink:'#E9EBE6',muted:'#959BA2',accent:'#B8E62E',quiet:'#1C2418'},
+ {c:{en:'Gaming cafe',th:'ร้านเกม และอีสปอร์ต'},t:{en:'Nullpoint Esports',th:'นัลพอยต์ อีสปอร์ต'},
+  s:{en:'Forty seats, tournament nights every Friday.',th:'สี่สิบที่นั่ง จัดแข่งทุกคืนวันศุกร์'},
+  b:{en:'Reserve a seat',th:'จองเครื่อง'},n:{en:'Hued dark surface. Pure black is what an unfinished build looks like.',th:'พื้นมืดที่มีเฉดสีอยู่ในตัว สีดำสนิทคือหน้าตาของงานที่ยังทำไม่เสร็จ'},
+  surface:'#12101A',ink:'#EDEAF5',muted:'#9990AD',accent:'#6B45F0',quiet:'#241E3D'}
+];
+
+/* ---------------- state ---------------- */
+const root=document.documentElement;
+let lang='en', current=THEMES[0], catIndex=2;
+
+function applyTheme(t){
+  current=t;
+  const inv=bestText(t.accent);
+  const map={'--surface':t.surface,'--raised':t.raised,'--sunken':t.sunken,'--border':t.border,
+             '--ink':t.ink,'--muted':t.muted,'--accent':t.accent,'--quiet':t.quiet,'--accent-text':inv};
+  for(const k in map) root.style.setProperty(k,map[k]);
+  root.style.setProperty('--accent-ink', textSafe(t.accent,t.surface));
+  document.getElementById('themeName').textContent=t.name;
+  document.getElementById('themeOrigin').textContent=t.origin[lang];
+  document.getElementById('heroLine').textContent=t.line[lang];
+  drawStack(t); drawMeters(t,inv);
+  document.querySelectorAll('#rail .chip').forEach(c=>c.setAttribute('aria-pressed',String(c.dataset.name===t.name)));
+}
+
+function drawStack(t){
+  const L=T[lang].bands;
+  const rows=[[L[0],t.surface,t.surface,t.ink],[L[1],t.raised,t.raised,t.ink],
+    [L[2],t.ink,t.ink,t.surface],[L[3],t.muted,t.muted,t.surface],
+    [L[4],t.accent,t.accent,bestText(t.accent)],[L[5],t.quiet,t.quiet,bestText(t.quiet)]];
+  const foot=document.querySelector('.stack-foot');
+  document.querySelectorAll('.band').forEach(b=>b.remove());
+  rows.forEach(([role,hex,bg,fg])=>{
+    const d=document.createElement('div');
+    d.className='band'; d.style.background=bg; d.style.color=fg;
+    d.innerHTML=`<span class="role"></span><span class="hex">${hex.toUpperCase()}</span>`;
+    d.querySelector('.role').textContent=role;
+    document.querySelector('#stack').insertBefore(d,foot);
+  });
+}
+
+function drawMeters(t,inv){
+  const L=T[lang];
+  const set=[[L.meters[0],ratio(t.ink,t.surface),4.5],[L.meters[1],ratio(t.muted,t.surface),4.5],
+             [L.meters[2],ratio(inv,t.accent),4.5],[L.meters[3],ratio(t.accent,t.surface),3]];
+  document.getElementById('meters').innerHTML=set.map(([label,r,min])=>{
+    let cls,txt;
+    if(r>=min){cls='pass';txt=L.vPass(min);}
+    else if(r>=min-1.5){cls='warn';txt=L.vWarn;}
+    else {cls='fail';txt=L.vFail(min);}
+    const w=Math.min(100,(r/12)*100);
+    return `<div class="meter"><div class="pair">${label}</div>
+      <div class="ratio">${r.toFixed(2)}:1</div>
+      <span class="verdict ${cls}">${txt}</span>
+      <div class="bar"><i style="width:${w}%"></i></div></div>`;
+  }).join('');
+}
+
+function drawCat(i){
+  catIndex=i;
+  const c=CATS[i], inv=bestText(c.accent), L=T[lang];
+  const site=document.getElementById('pvSite');
+  site.style.background=c.surface; site.style.color=c.ink;
+  document.getElementById('pvTitle').textContent=c.t[lang];
+  document.getElementById('pvSub').textContent=c.s[lang];
+  const btn=document.getElementById('pvBtn');
+  btn.textContent=c.b[lang]; btn.style.background=c.accent; btn.style.color=inv;
+  document.getElementById('pvNote').textContent=c.n[lang];
+  const rows=[['surface',c.surface],['ink',c.ink],['ink-muted',c.muted],['accent',c.accent],['accent-quiet',c.quiet]];
+  document.getElementById('pvCode').innerHTML=
+    rows.map(([k,v])=>`<div class="row"><span class="k">--${k}</span><span><span class="sw" style="background:${v}"></span>${v.toUpperCase()}</span></div>`).join('')
+    +`<div class="row" style="border:none;margin-top:10px"><span class="k">${L.inkOn}</span><span>${ratio(c.ink,c.surface).toFixed(1)}:1</span></div>`
+    +`<div class="row" style="border:none"><span class="k">${L.btnOn}</span><span>${ratio(inv,c.accent).toFixed(1)}:1</span></div>`;
+  document.querySelectorAll('.cat').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.i===i)));
+}
+
+function drawSteps(){
+  document.getElementById('steps').innerHTML=T[lang].steps.map(([n,h,p])=>
+    `<div class="step"><div class="n">${n}</div><h3>${h}</h3><p>${p}</p></div>`).join('');
+}
+
+function setLang(l){
+  lang=l;
+  root.setAttribute('lang',l);
+  document.title=T[l].title;
+  document.querySelectorAll('[data-t]').forEach(el=>{ el.textContent=T[l][el.dataset.t]; });
+  document.querySelectorAll('#cats .cat').forEach((b,i)=>{ b.textContent=CATS[i].c[l]; });
+  drawSteps(); applyTheme(current); drawCat(catIndex);
+}
+
+/* build static lists */
+document.getElementById('rail').innerHTML=THEMES.map(t=>
+ `<button class="chip" data-name="${t.name}" aria-pressed="false"><i style="background:${t.accent};border:1px solid ${t.border}"></i>${t.name}</button>`).join('');
+document.querySelectorAll('#rail .chip').forEach(c=>
+ c.addEventListener('click',()=>applyTheme(THEMES.find(t=>t.name===c.dataset.name))));
+
+document.getElementById('cats').innerHTML=CATS.map((c,i)=>
+ `<button class="cat" data-i="${i}" aria-pressed="${i===2}"></button>`).join('');
+document.querySelectorAll('.cat').forEach(b=>b.addEventListener('click',()=>drawCat(+b.dataset.i)));
+
+document.getElementById('randomBtn').addEventListener('click',()=>{
+  let t; do{ t=THEMES[Math.floor(Math.random()*THEMES.length)]; } while(t.name===current.name);
+  applyTheme(t);
+});
+['ctaTop','ctaBottom'].forEach(id=>document.getElementById(id).addEventListener('click',()=>{
+  document.getElementById('check').scrollIntoView({block:'start'});
+}));
+
+setLang('en');
+</script>
+</body>
+</html>

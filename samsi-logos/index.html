@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="th" data-bg="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samsi — 20 แบบโลโก้</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{ --page:#F0EEE9; --card:#FFFFFF; --ink:#14161C; --muted:#4E5364; --line:#DCD8D0; }
+[data-bg="dark"]{ --page:#14161C; --card:#1C2029; --ink:#EDEFE9; --muted:#A2AAB8; --line:#2C323D; }
+*{box-sizing:border-box;}
+body{margin:0;background:var(--page);color:var(--ink);
+  font-family:'IBM Plex Sans Thai','Outfit',sans-serif;line-height:1.7;letter-spacing:0;
+  padding:26px 22px 60px;transition:background .2s,color .2s;}
+header{max-width:900px;margin:0 auto 22px;}
+h1{font-family:'Outfit',sans-serif;font-size:24px;font-weight:700;margin:0 0 6px;letter-spacing:-.02em;}
+header p{margin:0;color:var(--muted);font-size:14.5px;max-width:60ch;}
+.controls{display:flex;gap:9px;margin-top:16px;flex-wrap:wrap;}
+button{font:inherit;font-size:14px;cursor:pointer;background:transparent;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:4px;padding:7px 14px;transition:border-color .15s;}
+button:hover{border-color:var(--ink);}
+button[aria-pressed="true"]{background:var(--ink);color:var(--page);border-color:var(--ink);}
+.grid{max-width:1180px;margin:0 auto;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:16px;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px 18px 15px;
+  transition:background .2s,border-color .2s;}
+.mark{display:flex;align-items:center;gap:11px;min-height:56px;}
+.mark svg{flex:none;}
+.wm{font-family:'Outfit',sans-serif;font-weight:600;font-size:23px;letter-spacing:-.025em;}
+.meta{display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+  margin-top:16px;padding-top:11px;border-top:1px solid var(--line);}
+.name{font-size:13px;color:var(--muted);}
+.no{font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:var(--muted);}
+.pair{display:flex;gap:5px;margin-top:9px;}
+.pair span{flex:1;height:7px;border-radius:2px;}
+.hex{font-family:'Outfit',sans-serif;font-size:11px;color:var(--muted);margin-top:6px;letter-spacing:.01em;}
+.markonly .wm{display:none;}
+.markonly .mark{justify-content:center;}
+.sec{max-width:1180px;margin:34px auto 14px;font-family:'Outfit',sans-serif;font-size:15px;
+  font-weight:600;color:var(--muted);letter-spacing:0;}
+.sec:first-of-type{margin-top:4px;}
+footer{max-width:900px;margin:34px auto 0;color:var(--muted);font-size:13.5px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Samsi — 36 แบบโลโก้</h1>
+  <p>ชุดแรกคือสองสีทับกันแล้วเกิดสีที่สาม ชุดที่สองเพิ่มสัญลักษณ์แมว ซึ่งเข้ากับชื่อพอดีเพราะ สามสี คือแมวสามสี ทุกแบบใช้รูปทรงเรียบ ใช้สีสองสีต่อแบบ โทนที่สามเป็นสีผสมจริงของคู่นั้น</p>
+  <div class="controls">
+    <button id="bgBtn">พื้นมืด</button>
+    <button id="soloBtn" aria-pressed="false">ดูเฉพาะสัญลักษณ์</button>
+  </div>
+</header>
+
+<h2 class="sec">ชุดที่ 1 — เรขาคณิต สองสีเกิดสีที่สาม</h2>
+<div class="grid" id="grid"></div>
+<h2 class="sec">ชุดที่ 2 — แมวสามสี</h2>
+<div class="grid" id="grid2"></div>
+
+<footer>กดที่ปุ่มด้านบนเพื่อดูบนพื้นมืดหรือดูเฉพาะตัวสัญลักษณ์ บอกเลขแบบที่ชอบมาได้เลย จะทำต่อให้เป็นไฟล์ SVG พร้อมใช้ ทั้งเวอร์ชันแนวนอน แนวตั้ง และไอคอนเดี่ยว</footer>
+
+<script>
+const P = {
+  cobalt:'#1E3FCB', clay:'#C89C8C', forest:'#1E3A2C', maize:'#EBB13C',
+  russet:'#8B4A33', cream:'#F0EEE9', lilac:'#C9C0E4', magenta:'#C2185B',
+  teal:'#0E6E8C', sand:'#E5D3B8', olive:'#4A5D3A', lime:'#B8E62E',
+  ink:'#14161C', plum:'#5B2C5F', peach:'#F0A07A', coral:'#E9654B',
+  navy:'#17324E', green:'#116B45', slate:'#5B6478', blush:'#E8C9C0',
+  sky:'#6E8CFF', rust:'#A8412A', mint:'#7FC8A9', wine:'#7A1F3D'
+};
+
+// mix two hexes into a real third colour — the whole idea behind the name.
+const mix=(x,y,t=.5)=>{
+  const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+  const [r1,g1,b1]=p(x),[r2,g2,b2]=p(y);
+  const c=v=>Math.round(v).toString(16).padStart(2,'0');
+  return '#'+c(r1+(r2-r1)*t)+c(g1+(g2-g1)*t)+c(b1+(b2-b1)*t);
+};
+
+// each: name, colour pair, svg body (viewBox 0 0 48 48). Where a third tone
+// appears it is mix(a,b), not a faded copy — a faded copy reads as disabled.
+const LOGOS = [
+ ['สองวงซ้อน', P.cobalt, P.clay, (a,b)=>`
+   <circle cx="19" cy="24" r="13" fill="${a}"/>
+   <circle cx="29" cy="24" r="13" fill="${b}" opacity=".82"/>`],
+
+ ['สามแท่ง', P.forest, P.maize, (a,b)=>`
+   <rect x="7" y="11" width="9" height="26" rx="4.5" fill="${a}"/>
+   <rect x="19.5" y="11" width="9" height="26" rx="4.5" fill="${b}"/>
+   <rect x="32" y="11" width="9" height="26" rx="4.5" fill="${mix(a,b)}"/>`],
+
+ ['สามเหลี่ยมแบ่งสาม', P.russet, P.maize, (a,b)=>`
+   <path d="M24 8 L40 36 H8 Z" fill="${a}"/>
+   <path d="M24 8 L32 22 L24 36 Z" fill="${b}" opacity=".9"/>`],
+
+ ['จานสี', P.teal, P.sand, (a,b)=>`
+   <circle cx="24" cy="24" r="16" fill="${b}"/>
+   <path d="M24 8 A16 16 0 0 1 24 40 Z" fill="${a}"/>
+   <circle cx="24" cy="24" r="5" fill="${b}"/>`],
+
+ ['สี่เหลี่ยมซ้อน', P.cobalt, P.peach, (a,b)=>`
+   <rect x="8" y="8" width="24" height="24" rx="6" fill="${a}"/>
+   <rect x="18" y="18" width="22" height="22" rx="6" fill="${b}" opacity=".85"/>`],
+
+ ['ครึ่งวงกลม', P.plum, P.peach, (a,b)=>`
+   <path d="M10 34 A14 14 0 0 1 38 34 Z" fill="${a}"/>
+   <rect x="10" y="34" width="28" height="6" rx="3" fill="${b}"/>`],
+
+ ['วงซ้อนกลาง', P.navy, P.coral, (a,b)=>`
+   <circle cx="24" cy="24" r="16" fill="none" stroke="${a}" stroke-width="5"/>
+   <circle cx="24" cy="24" r="7" fill="${b}"/>`],
+
+ ['สามจุด', P.forest, P.maize, (a,b)=>`
+   <circle cx="24" cy="12" r="6.5" fill="${a}"/>
+   <circle cx="13" cy="31" r="6.5" fill="${b}"/>
+   <circle cx="35" cy="31" r="6.5" fill="${mix(a,b)}"/>`],
+
+ ['ชิปสีเรียง', P.ink, P.lime, (a,b)=>`
+   <rect x="8" y="14" width="11" height="20" rx="3" fill="${a}"/>
+   <rect x="20" y="10" width="11" height="28" rx="3" fill="${b}"/>
+   <rect x="32" y="17" width="8" height="14" rx="3" fill="${mix(a,b)}"/>`],
+
+ ['S จากสองส่วนโค้ง', P.cobalt, P.clay, (a,b)=>`
+   <path d="M32 15 A9 9 0 1 0 24 24" fill="none" stroke="${a}" stroke-width="6" stroke-linecap="round"/>
+   <path d="M16 33 A9 9 0 1 0 24 24" fill="none" stroke="${b}" stroke-width="6" stroke-linecap="round"/>`],
+
+ ['ตาแหลม', P.teal, P.maize, (a,b)=>`
+   <path d="M8 24 Q24 8 40 24 Q24 40 8 24 Z" fill="${a}"/>
+   <circle cx="24" cy="24" r="6" fill="${b}"/>`],
+
+ ['วงกลมถูกตัด', P.wine, P.blush, (a,b)=>`
+   <circle cx="24" cy="24" r="16" fill="${a}"/>
+   <path d="M24 24 L24 8 A16 16 0 0 1 40 24 Z" fill="${b}"/>`],
+
+ ['สี่เหลี่ยมมุมมน', P.olive, P.maize, (a,b)=>`
+   <path d="M10 10 H26 A12 12 0 0 1 26 34 H10 Z" fill="${a}"/>
+   <path d="M26 10 A12 12 0 0 1 26 34 Z" fill="${b}" opacity=".9"/>`],
+
+ ['บันไดสามขั้น', P.navy, P.sky, (a,b)=>`
+   <rect x="8" y="28" width="10" height="12" rx="3" fill="${a}"/>
+   <rect x="19" y="20" width="10" height="20" rx="3" fill="${b}"/>
+   <rect x="30" y="12" width="10" height="28" rx="3" fill="${mix(a,b)}"/>`],
+
+ ['วงกลมสามชั้น', P.rust, P.sand, (a,b)=>`
+   <circle cx="24" cy="24" r="16" fill="${a}"/>
+   <circle cx="24" cy="24" r="10.5" fill="${b}"/>
+   <circle cx="24" cy="24" r="5" fill="${a}"/>`],
+
+ ['แถบเฉียง', P.magenta, P.lilac, (a,b)=>`
+   <rect x="8" y="8" width="32" height="32" rx="8" fill="${b}"/>
+   <path d="M8 30 L30 8 H40 L8 40 Z" fill="${a}" opacity=".9"/>`],
+
+ ['หยดสี', P.cobalt, P.blush, (a,b)=>`
+   <path d="M24 8 C32 18 38 23 38 29 A14 14 0 0 1 10 29 C10 23 16 18 24 8 Z" fill="${a}"/>
+   <circle cx="29" cy="29" r="5.5" fill="${b}"/>`],
+
+ ['วงแหวนเปิด', P.green, P.maize, (a,b)=>`
+   <path d="M24 9 A15 15 0 1 1 13 35" fill="none" stroke="${a}" stroke-width="6" stroke-linecap="round"/>
+   <circle cx="34" cy="34" r="6" fill="${b}"/>`],
+
+ ['ลูกศรซ้อน', P.ink, P.coral, (a,b)=>`
+   <path d="M10 22 L24 10 L38 22" fill="none" stroke="${a}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+   <path d="M10 36 L24 24 L38 36" fill="none" stroke="${b}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`],
+
+ ['เลนส์สองสี', P.plum, P.mint, (a,b)=>`
+   <path d="M24 8 A16 16 0 0 0 24 40 Z" fill="${a}"/>
+   <path d="M24 8 A16 16 0 0 1 24 40 Z" fill="${b}"/>
+   <circle cx="24" cy="24" r="6" fill="${a}" opacity=".85"/>`]
+];
+
+
+// ---- ชุดที่ 2: แมวสามสี ----
+// หูซ้าย/ขวาใช้ร่วมกันทุกแบบ เพื่อให้สัญลักษณ์อ่านว่า "แมว" ได้ตรงกัน
+const ears=(c)=>`<polygon points="12,21 13.5,6 26,14" fill="${c}"/>
+                 <polygon points="36,21 34.5,6 22,14" fill="${c}"/>`;
+
+const CATLOGOS = [
+ ['หัวแมวสามสี', P.russet, P.maize, (a,b)=>`
+   ${ears(a)}
+   <circle cx="24" cy="27" r="14" fill="${a}"/>
+   <circle cx="30" cy="22" r="6" fill="${b}"/>
+   <circle cx="18" cy="32" r="4" fill="${mix(a,b)}"/>`],
+
+ ['หัวแมวผ่าครึ่ง', P.cobalt, P.clay, (a,b)=>`
+   ${ears(a)}
+   <path d="M24 13 A14 14 0 0 0 24 41 Z" fill="${a}"/>
+   <path d="M24 13 A14 14 0 0 1 24 41 Z" fill="${b}"/>`],
+
+ ['ชิปสีมีหู', P.forest, P.maize, (a,b)=>`
+   <polygon points="9,20 11,4 24,16" fill="${a}"/>
+   <polygon points="39,20 37,4 24,16" fill="${a}"/>
+   <rect x="9" y="13" width="30" height="28" rx="7" fill="${a}"/>
+   <rect x="9" y="30" width="30" height="11" rx="5.5" fill="${b}"/>`],
+
+ ['ตาแมว', P.teal, P.maize, (a,b)=>`
+   <path d="M3 24 Q24 6 45 24 Q24 42 3 24 Z" fill="${b}"/>
+   <circle cx="24" cy="24" r="9" fill="${mix(a,b,.45)}"/>
+   <ellipse cx="24" cy="24" rx="2.6" ry="8" fill="${a}"/>`],
+
+ ['อุ้งเท้าสามสี', P.plum, P.peach, (a,b)=>`
+   <ellipse cx="24" cy="31" rx="11" ry="9" fill="${a}"/>
+   <ellipse cx="13" cy="17" rx="4.5" ry="5.5" fill="${b}"/>
+   <ellipse cx="24" cy="13" rx="4.5" ry="5.5" fill="${mix(a,b)}"/>
+   <ellipse cx="35" cy="17" rx="4.5" ry="5.5" fill="${b}"/>`],
+
+ ['หางเป็นตัว S', P.cobalt, P.clay, (a,b)=>`
+   ${ears(a)}
+   <circle cx="19" cy="27" r="12" fill="${a}"/>
+   <path d="M31 36 A5.5 5.5 0 1 0 31 25 A5 5 0 1 1 31 15" fill="none"
+         stroke="${b}" stroke-width="4.5" stroke-linecap="round"/>`],
+
+ ['แมวนั่งสองสี', P.ink, P.lime, (a,b)=>`
+   <polygon points="16,11 16,1 24,7" fill="${a}"/>
+   <polygon points="32,11 32,1 24,7" fill="${a}"/>
+   <circle cx="24" cy="16" r="9" fill="${a}"/>
+   <path d="M13 43 Q13 25 24 25 Q35 25 35 43 Z" fill="${a}"/>
+   <path d="M24 25 Q35 25 35 43 H24 Z" fill="${b}"/>`],
+
+ ['หนวดสามเส้น', P.navy, P.coral, (a,b)=>`
+   ${ears(a)}
+   <circle cx="24" cy="27" r="14" fill="${a}"/>
+   <g stroke="${b}" stroke-width="2.2" stroke-linecap="round">
+     <path d="M8 22 H17"/><path d="M8 27 H17"/><path d="M8 32 H17"/>
+     <path d="M40 22 H31"/><path d="M40 27 H31"/><path d="M40 32 H31"/>
+   </g>
+   <polygon points="24,26 21,23 27,23" fill="${b}"/>`],
+
+ ['หัวแมวแบ่งสาม', P.wine, P.blush, (a,b)=>`
+   ${ears(a)}
+   <circle cx="24" cy="27" r="14" fill="${a}"/>
+   <path d="M24 27 L24 13 A14 14 0 0 1 36 34 Z" fill="${b}"/>
+   <path d="M24 27 L36 34 A14 14 0 0 1 12 34 Z" fill="${mix(a,b)}"/>`],
+
+ ['แมวหลับ', P.olive, P.maize, (a,b)=>`
+   ${ears(a)}
+   <circle cx="24" cy="27" r="14" fill="${a}"/>
+   <g stroke="${b}" stroke-width="2.6" stroke-linecap="round" fill="none">
+     <path d="M15 27 Q18.5 23 22 27"/><path d="M26 27 Q29.5 23 33 27"/>
+   </g>
+   <polygon points="24,34 21,31 27,31" fill="${b}"/>`],
+
+ ['จมูกสามเหลี่ยม', P.rust, P.sand, (a,b)=>`
+   ${ears(a)}
+   <circle cx="24" cy="27" r="14" fill="${b}"/>
+   <circle cx="19" cy="25" r="2.3" fill="${a}"/>
+   <circle cx="29" cy="25" r="2.3" fill="${a}"/>
+   <polygon points="24,33 20.5,29 27.5,29" fill="${a}"/>
+   <path d="M24 33 V36" stroke="${a}" stroke-width="2" stroke-linecap="round"/>`],
+
+ ['แมวสองวงซ้อน', P.magenta, P.lilac, (a,b)=>`
+   <polygon points="10,21 11,8 22,14" fill="${a}"/>
+   <polygon points="38,21 37,8 26,14" fill="${b}"/>
+   <circle cx="19" cy="27" r="12" fill="${a}"/>
+   <circle cx="29" cy="27" r="12" fill="${b}" opacity=".82"/>`],
+
+ ['หยดแมว', P.cobalt, P.blush, (a,b)=>`
+   <polygon points="14,17 15,5 25,13" fill="${a}"/>
+   <polygon points="34,17 33,5 23,13" fill="${a}"/>
+   <path d="M24 12 C32 21 38 25 38 30 A14 14 0 0 1 10 30 C10 25 16 21 24 12 Z" fill="${a}"/>
+   <circle cx="29" cy="30" r="5.5" fill="${b}"/>`],
+
+ ['แมวกับจุดสามสี', P.green, P.maize, (a,b)=>`
+   ${ears(a)}
+   <circle cx="24" cy="27" r="14" fill="${a}"/>
+   <circle cx="17" cy="27" r="3.2" fill="${b}"/>
+   <circle cx="24" cy="27" r="3.2" fill="${mix(a,b)}"/>
+   <circle cx="31" cy="27" r="3.2" fill="${b}"/>`],
+
+ ['หูบนวงกลม', P.slate, P.coral, (a,b)=>`
+   <polygon points="13,19 14,6 25,13" fill="${b}"/>
+   <polygon points="35,19 34,6 23,13" fill="${b}"/>
+   <circle cx="24" cy="27" r="14" fill="none" stroke="${a}" stroke-width="5"/>
+   <circle cx="24" cy="27" r="5" fill="${b}"/>`],
+
+ ['แมวมองข้าง', P.forest, P.peach, (a,b)=>`
+   <polygon points="12,20 13,7 24,14" fill="${a}"/>
+   <polygon points="32,18 31,6 22,13" fill="${a}"/>
+   <path d="M10 22 Q10 12 20 12 Q34 12 34 24 Q34 38 22 38 Q10 38 10 26 Z" fill="${a}"/>
+   <circle cx="27" cy="23" r="4" fill="${b}"/>
+   <path d="M36 38 Q44 36 42 26" fill="none" stroke="${a}" stroke-width="4.5" stroke-linecap="round"/>`]
+];
+
+const grid=document.getElementById('grid');
+grid.innerHTML=LOGOS.map(([name,a,b,body],i)=>`
+  <div class="card">
+    <div class="mark">
+      <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}">
+        ${body(a,b)}
+      </svg>
+      <span class="wm">Samsi</span>
+    </div>
+    <div class="pair"><span style="background:${a}"></span><span style="background:${b}"></span></div>
+    <div class="hex">${a.toUpperCase()} · ${b.toUpperCase()}</div>
+    <div class="meta"><span class="name">${name}</span><span class="no">${String(i+1).padStart(2,'0')}</span></div>
+  </div>`).join('');
+
+document.getElementById('grid2').innerHTML=CATLOGOS.map(([name,a,b,body],i)=>`
+  <div class="card">
+    <div class="mark">
+      <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${name}">
+        ${body(a,b)}
+      </svg>
+      <span class="wm">Samsi</span>
+    </div>
+    <div class="pair"><span style="background:${a}"></span><span style="background:${b}"></span></div>
+    <div class="hex">${a.toUpperCase()} · ${b.toUpperCase()}</div>
+    <div class="meta"><span class="name">${name}</span><span class="no">${String(i+21).padStart(2,'0')}</span></div>
+  </div>`).join('');
+
+const bgBtn=document.getElementById('bgBtn');
+bgBtn.addEventListener('click',()=>{
+  const dark=document.documentElement.getAttribute('data-bg')==='dark';
+  document.documentElement.setAttribute('data-bg',dark?'light':'dark');
+  bgBtn.textContent=dark?'พื้นมืด':'พื้นสว่าง';
+});
+const soloBtn=document.getElementById('soloBtn');
+soloBtn.addEventListener('click',()=>{
+  const on=soloBtn.getAttribute('aria-pressed')==='true';
+  soloBtn.setAttribute('aria-pressed',String(!on));
+  grid.classList.toggle('markonly',!on);
+  document.getElementById('grid2').classList.toggle('markonly',!on);
+});
+</script>
+</body>
+</html>

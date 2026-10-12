@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freightline — ระบบสีสำหรับแอปโลจิสติกส์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#F7F6F3; --raised:#FFFFFF; --sunken:#EDEBE6;
+  --border:#DBD7CF; --border-strong:#8E897C;
+  --ink:#12151C; --ink-muted:#4E5364; --ink-inverse:#FFFFFF;
+  --accent:#1E3FCB; --accent-hover:#152FA0; --accent-quiet:#E3E7F8;
+  --queued:#5B6478; --transit:#0E6E8C; --delivered:#116B45; --delayed:#8A5B06; --exception:#A8241D;
+  --queued-bg:#E9EAEE; --transit-bg:#DEEEF4; --delivered-bg:#DDEEE6; --delayed-bg:#F6EBD5; --exception-bg:#F7E0DE;
+  --lead:1.5; --row-pad:11px; --fs:14.5px;
+}
+[data-theme="dark"]{
+  --surface:#12151C; --raised:#1A1F29; --sunken:#0C0F14;
+  --border:#2B323E; --border-strong:#5C6676;
+  --ink:#E7E9EE; --ink-muted:#9AA3B2; --ink-inverse:#12151C;
+  --accent:#6E8CFF; --accent-hover:#8AA2FF; --accent-quiet:#1B2440;
+  --queued:#9AA3B2; --transit:#4FB8D8; --delivered:#4FBD8A; --delayed:#E0A63B; --exception:#F0837A;
+  --queued-bg:#222836; --transit-bg:#13303B; --delivered-bg:#133026; --delayed-bg:#332612; --exception-bg:#361D1C;
+}
+/* Thai: darker muted and status colours, looser leading, taller rows, larger type */
+html[lang="th"]{
+  --ink-muted:#3F4454;
+  --queued:#4E576B; --transit:#0B5F7A; --delivered:#0E5C3B; --delayed:#754D05; --exception:#93201A;
+  --lead:1.7; --row-pad:14px; --fs:15.5px;
+}
+html[lang="th"][data-theme="dark"]{
+  --ink-muted:#B3BBC8;
+  --queued:#B3BBC8; --transit:#6FC7E2; --delivered:#6BCB9E; --delayed:#E8B558; --exception:#F59B93;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--surface);color:var(--ink);
+  font-family:'Inter Tight',system-ui,sans-serif;font-size:var(--fs);line-height:var(--lead);
+  -webkit-font-smoothing:antialiased;transition:background .18s,color .18s;}
+html[lang="th"] body{font-family:'IBM Plex Sans Thai','Noto Sans Thai',sans-serif;letter-spacing:0;}
+html[lang="th"] .num{font-family:'Inter Tight',sans-serif;}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh;}
+
+aside{background:var(--raised);border-right:1px solid var(--border);padding:18px 14px;transition:background .18s;}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:16.5px;letter-spacing:-.02em;
+  margin-bottom:22px;font-family:'Inter Tight',sans-serif;}
+.brand i{width:16px;height:16px;border-radius:4px;background:var(--accent);display:block;}
+nav a{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 10px;border-radius:5px;color:var(--ink-muted);text-decoration:none;font-weight:500;margin-bottom:2px;}
+nav a:hover{background:var(--sunken);color:var(--ink);}
+nav a[aria-current]{background:var(--accent-quiet);color:var(--accent);font-weight:600;}
+nav a .count{font-size:12px;font-variant-numeric:tabular-nums;opacity:.85;}
+.navgroup{font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:18px 0 7px 10px;}
+html[lang="th"] .navgroup{font-size:12.5px;}
+
+main{padding:20px 26px 46px;}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+h1{font-size:21px;font-weight:700;letter-spacing:-.02em;margin:0;}
+html[lang="th"] h1{letter-spacing:0;}
+.spacer{flex:1;}
+.search input{background:var(--sunken);border:1.5px solid var(--border);border-radius:5px;
+  padding:8px 12px;font:inherit;color:var(--ink);width:250px;}
+.search input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent);}
+button{font:inherit;cursor:pointer;border-radius:5px;}
+.btn{background:var(--accent);color:var(--ink-inverse);border:none;padding:9px 16px;font-weight:600;}
+.btn:hover{background:var(--accent-hover);}
+.btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--border-strong);padding:8px 14px;font-weight:500;}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:12px;margin-bottom:20px;}
+.kpi{background:var(--raised);border:1px solid var(--border);border-radius:6px;padding:14px 16px;transition:background .18s;}
+.kpi .lbl{font-size:12.5px;color:var(--ink-muted);}
+.kpi .val{font-size:27px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;
+  margin-top:3px;line-height:1.15;}
+.kpi .delta{font-size:12.5px;font-weight:600;margin-top:2px;}
+html[lang="th"] .kpi .lbl,html[lang="th"] .kpi .delta{font-size:13px;}
+.up{color:var(--delivered);} .down{color:var(--exception);}
+
+.panel{background:var(--raised);border:1px solid var(--border);border-radius:6px;overflow:hidden;
+  margin-bottom:18px;transition:background .18s;}
+.panel-head{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--border);}
+.panel-head h2{font-size:14.5px;font-weight:600;margin:0;}
+html[lang="th"] .panel-head h2{font-size:15.5px;}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;}
+th{text-align:left;font-size:12px;font-weight:600;color:var(--ink-muted);padding:9px 16px;
+  border-bottom:1px solid var(--border);background:var(--sunken);}
+html[lang="th"] th{font-size:13px;padding:11px 16px;}
+td{padding:var(--row-pad) 16px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--sunken);}
+tbody tr[aria-selected="true"]{background:var(--accent-quiet);}
+td.ref{font-weight:600;}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:3px 9px 3px 7px;border-radius:20px;white-space:nowrap;}
+html[lang="th"] .chip{font-size:13px;padding:4px 10px 4px 8px;}
+.chip b{font-size:10px;width:13px;height:13px;border-radius:50%;display:grid;place-items:center;
+  color:var(--raised);font-weight:800;font-family:'Inter Tight',sans-serif;line-height:1;}
+.c-queued{background:var(--queued-bg);color:var(--queued);}   .c-queued b{background:var(--queued);}
+.c-transit{background:var(--transit-bg);color:var(--transit);} .c-transit b{background:var(--transit);}
+.c-delivered{background:var(--delivered-bg);color:var(--delivered);} .c-delivered b{background:var(--delivered);}
+.c-delayed{background:var(--delayed-bg);color:var(--delayed);} .c-delayed b{background:var(--delayed);}
+.c-exception{background:var(--exception-bg);color:var(--exception);} .c-exception b{background:var(--exception);}
+
+.cols{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start;}
+.alert{display:flex;gap:11px;padding:13px 16px;border-bottom:1px solid var(--border);}
+.alert:last-child{border-bottom:none;}
+.alert .dot{width:8px;height:8px;border-radius:50%;margin-top:7px;flex:none;}
+.alert .t{font-weight:600;font-size:13.5px;}
+.alert .s{font-size:12.5px;color:var(--ink-muted);}
+html[lang="th"] .alert .t{font-size:14.5px;}
+html[lang="th"] .alert .s{font-size:13.5px;}
+.bar{height:8px;border-radius:4px;background:var(--sunken);display:flex;overflow:hidden;margin:14px 16px 16px;}
+.bar i{display:block;height:100%;}
+.legend{display:flex;flex-wrap:wrap;gap:12px;padding:0 16px 16px;font-size:12.5px;color:var(--ink-muted);}
+html[lang="th"] .legend{font-size:13.5px;}
+.legend span{display:flex;align-items:center;gap:6px;}
+.legend i{width:9px;height:9px;border-radius:2px;flex:none;}
+footer{color:var(--ink-muted);font-size:12.5px;padding:10px 0 0;font-family:'Inter Tight',sans-serif;}
+@media (max-width:860px){
+  .app{grid-template-columns:1fr;} aside{display:none;}
+  .cols{grid-template-columns:1fr;} main{padding:18px 16px 40px;}
+  .search input{width:150px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><i></i>Freightline</div>
+    <nav id="nav"></nav>
+  </aside>
+  <main>
+    <div class="topbar">
+      <h1 id="h1"></h1>
+      <div class="spacer"></div>
+      <div class="search"><input id="search" type="search"></div>
+      <button class="btn-ghost" id="langBtn"></button>
+      <button class="btn-ghost" id="themeBtn"></button>
+      <button class="btn" id="newBtn"></button>
+    </div>
+    <div class="kpis" id="kpis"></div>
+    <div class="cols">
+      <div class="panel">
+        <div class="panel-head"><h2 id="tblTitle"></h2></div>
+        <table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-head"><h2 id="alertTitle"></h2></div>
+          <div id="alerts"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 id="mixTitle"></h2></div>
+          <div class="bar" id="bar"></div>
+          <div class="legend" id="legend"></div>
+        </div>
+      </div>
+    </div>
+    <footer id="ratios"></footer>
+  </main>
+</div>
+
+<script>
+const GLYPH={queued:'\u00b7',transit:'\u2192',delivered:'\u2713',delayed:'!',exception:'\u00d7'};
+const MIX={transit:52,delivered:27,queued:12,delayed:6,exception:3};
+
+const T={
+ th:{
+  title:'Freightline — ระบบสีสำหรับแอปโลจิสติกส์',
+  h1:'รายการขนส่ง', search:'ค้นหาด้วยเลขอ้างอิงหรือ AWB', newBtn:'สร้างรายการใหม่',
+  lang:'English', dark:'โหมดมืด', light:'โหมดสว่าง',
+  nav:[['รายการขนส่ง','1,284',1],['รายการมีปัญหา','17',0],['ผู้ขนส่ง','',0],['อัตราค่าขนส่ง','',0]],
+  navgroups:[['ปฏิบัติการ',['กระดานจ่ายงาน','คลังสินค้า','พิธีการศุลกากร']],
+             ['บัญชี',['วางบิล','ตั้งค่า']]],
+  kpis:[['รายการที่กำลังดำเนินการ','1,284','+6.2% เทียบสัปดาห์ก่อน','up'],
+        ['ส่งตรงเวลา','94.1%','+1.4 จุด','up'],
+        ['เวลาขนส่งเฉลี่ย','3.8 วัน','+0.3 วัน','down'],
+        ['ปัญหาที่ยังไม่ปิด','17','+5 วันนี้','down']],
+  tblTitle:'รายการล่าสุด',
+  thead:['เลขอ้างอิง','เส้นทาง','ผู้ขนส่ง','กำหนดถึง','สถานะ'],
+  statusLabel:{queued:'รอเข้ารับ',transit:'กำลังขนส่ง',delivered:'ส่งสำเร็จ',delayed:'ล่าช้า 2 วัน',exception:'ติดศุลกากร'},
+  legendLabel:{queued:'รอดำเนินการ',transit:'กำลังขนส่ง',delivered:'ส่งสำเร็จ',delayed:'ล่าช้า',exception:'มีปัญหา'},
+  alertTitle:'ต้องรีบจัดการ',
+  alerts:[['exception','FL-40911 ถูกกักที่ศุลกากร','ใบกำกับสินค้าไม่ตรงกับรายการ แจ้งชิปปิ้งแล้วเมื่อ 2 ชั่วโมงก่อน'],
+          ['delayed','Meridian Sea ล่าช้า 2 วัน','ท่าเรือแหลมฉบังแออัด กระทบรายการขนส่ง 9 รายการ'],
+          ['queued','3 รายการรอผู้ขนส่งยืนยัน','รายการที่ค้างนานที่สุดรอมาแล้ว 26 ชั่วโมง']],
+  mixTitle:'สัดส่วนสถานะ',
+  ratios:o=>`ค่าคอนทราสต์สด — เนื้อหา ${o.ink}:1 · ข้อความรอง ${o.muted}:1 · ตัวอักษรบนปุ่ม ${o.btn}:1 · ล่าช้า ${o.delayed}:1 · มีปัญหา ${o.exc}:1 · เส้นโฟกัส ${o.focus}:1`
+ },
+ en:{
+  title:'Freightline — logistics SaaS colour system',
+  h1:'Shipments', search:'Search by reference or AWB', newBtn:'New booking',
+  lang:'ไทย', dark:'Dark mode', light:'Light mode',
+  nav:[['Shipments','1,284',1],['Exceptions','17',0],['Carriers','',0],['Rates','',0]],
+  navgroups:[['Operations',['Dispatch board','Warehouse','Customs']],
+             ['Account',['Billing','Settings']]],
+  kpis:[['Active shipments','1,284','+6.2% vs last week','up'],
+        ['On-time delivery','94.1%','+1.4 pts','up'],
+        ['Avg. transit time','3.8d','+0.3d','down'],
+        ['Open exceptions','17','+5 today','down']],
+  tblTitle:'Recent shipments',
+  thead:['Reference','Lane','Carrier','ETA','Status'],
+  statusLabel:{queued:'Awaiting pickup',transit:'In transit',delivered:'Delivered',delayed:'Delayed 2d',exception:'Customs hold'},
+  legendLabel:{queued:'Queued',transit:'In transit',delivered:'Delivered',delayed:'Delayed',exception:'Exception'},
+  alertTitle:'Needs attention',
+  alerts:[['exception','FL-40911 held at customs','Commercial invoice mismatch. Broker notified 2h ago.'],
+          ['delayed','Meridian Sea running 2 days late','Port congestion at Laem Chabang affecting 9 shipments.'],
+          ['queued','3 bookings awaiting carrier confirmation','Oldest has been pending 26 hours.']],
+  mixTitle:'Status mix',
+  ratios:o=>`Live contrast — body ${o.ink}:1 · muted ${o.muted}:1 · button text ${o.btn}:1 · delayed ${o.delayed}:1 · exception ${o.exc}:1 · focus ring ${o.focus}:1`
+ }
+};
+
+const ROWS=[
+ ['FL-40921','BKK \u2192 SIN','Kestrel Air','12 Oct','transit',0],
+ ['FL-40918','LCH \u2192 HKG','Meridian Sea','19 Oct','delayed',1],
+ ['FL-40915','BKK \u2192 NRT','Kestrel Air','09 Oct','delivered',0],
+ ['FL-40911','PEN \u2192 BKK','Overland TH','\u2014','exception',0],
+ ['FL-40907','BKK \u2192 SYD','Southbound','22 Oct','queued',0],
+ ['FL-40902','SHA \u2192 BKK','Meridian Sea','14 Oct','transit',0]
+];
+
+const lum=h=>{h=h.trim().replace('#','');
+  const c=[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255)
+    .map(v=>v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4));
+  return .2126*c[0]+.7152*c[1]+.0722*c[2];};
+const cr=(a,b)=>{const l=[lum(a),lum(b)].sort((x,y)=>y-x);return ((l[0]+.05)/(l[1]+.05)).toFixed(2);};
+const v=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const root=document.documentElement;
+let lang='th';
+
+const chip=(st,label)=>`<span class="chip c-${st}"><b>${GLYPH[st]}</b>${label}</span>`;
+
+function report(){
+  const s=v('--surface'), r=v('--raised');
+  document.getElementById('ratios').textContent=T[lang].ratios({
+    ink:cr(v('--ink'),s), muted:cr(v('--ink-muted'),s),
+    btn:cr(v('--ink-inverse'),v('--accent')),
+    delayed:cr(v('--delayed'),r), exc:cr(v('--exception'),r),
+    focus:cr(v('--accent'),s)});
+}
+
+function render(){
+  const L=T[lang];
+  document.title=L.title;
+  document.getElementById('h1').textContent=L.h1;
+  const se=document.getElementById('search');
+  se.placeholder=L.search; se.setAttribute('aria-label',L.search);
+  document.getElementById('newBtn').textContent=L.newBtn;
+  document.getElementById('langBtn').textContent=L.lang;
+  document.getElementById('themeBtn').textContent =
+    root.getAttribute('data-theme')==='dark' ? L.light : L.dark;
+
+  document.getElementById('nav').innerHTML =
+    L.nav.map(([t,c,cur])=>`<a href="#"${cur?' aria-current="page"':''}>${t}${c?`<span class="count num">${c}</span>`:''}</a>`).join('')
+    + L.navgroups.map(([g,items])=>`<div class="navgroup">${g}</div>`+
+        items.map(t=>`<a href="#">${t}</a>`).join('')).join('');
+
+  document.getElementById('kpis').innerHTML=L.kpis.map(([lbl,val,d,dir])=>
+    `<div class="kpi"><div class="lbl">${lbl}</div><div class="val num">${val}</div><div class="delta ${dir}">${d}</div></div>`).join('');
+
+  document.getElementById('tblTitle').textContent=L.tblTitle;
+  document.getElementById('thead').innerHTML=L.thead.map(h=>`<th>${h}</th>`).join('');
+  document.getElementById('tbody').innerHTML=ROWS.map(([ref,lane,car,eta,st,sel])=>
+    `<tr${sel?' aria-selected="true"':''}><td class="ref num">${ref}</td><td class="num">${lane}</td>
+     <td>${car}</td><td class="num">${eta}</td><td>${chip(st,L.statusLabel[st])}</td></tr>`).join('');
+
+  document.getElementById('alertTitle').textContent=L.alertTitle;
+  document.getElementById('alerts').innerHTML=L.alerts.map(([st,t,s])=>
+    `<div class="alert"><span class="dot" style="background:var(--${st})"></span>
+     <div><div class="t">${t}</div><div class="s">${s}</div></div></div>`).join('');
+
+  document.getElementById('mixTitle').textContent=L.mixTitle;
+  document.getElementById('bar').innerHTML=Object.entries(MIX).map(([st,p])=>
+    `<i style="background:var(--${st});width:${p}%"></i>`).join('');
+  document.getElementById('legend').innerHTML=Object.entries(MIX).map(([st,p])=>
+    `<span><i style="background:var(--${st})"></i>${L.legendLabel[st]} ${p}%</span>`).join('');
+
+  report();
+}
+
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  root.setAttribute('data-theme', root.getAttribute('data-theme')==='dark'?'light':'dark');
+  render();
+});
+document.getElementById('langBtn').addEventListener('click',()=>{
+  lang = lang==='th' ? 'en' : 'th';
+  root.setAttribute('lang',lang);
+  render();
+});
+render();
+</script>
+</body>
+</html>
