@@ -246,6 +246,8 @@ const lum=h=>{h=h.replace('#','');
   return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2];};
 const ratio=(a,b)=>{const l=[lum(a),lum(b)].sort((x,y)=>y-x);return (l[0]+0.05)/(l[1]+0.05);};
 const bestText=bg=>ratio('#FFFFFF',bg)>=ratio('#14161C',bg)?'#FFFFFF':'#14161C';
+/* link colour: the accent itself when it clears 4.5:1 on the surface, otherwise the ink */
+const textSafe=(accent,surface)=>ratio(accent,surface)>=4.5?accent:getComputedStyle(root).getPropertyValue('--ink').trim()||'#14161C';
 
 /* ---------------- copy ---------------- */
 const T={
