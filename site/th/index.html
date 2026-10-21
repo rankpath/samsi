@@ -31,7 +31,7 @@ body{
 h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:800;
   letter-spacing:var(--display-track);line-height:var(--display-lead);margin:0;}
 p{margin:0;}
-a{color:var(--accent-ink);text-decoration:none;border-bottom:1.5px solid currentColor;}
+a{color:var(--second-ink,var(--accent-ink));text-decoration:none;border-bottom:1.5px solid currentColor;}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:2px;}
 
 /* ---------- Thai overrides ---------- */
@@ -313,7 +313,7 @@ const T={
 const THEMES=[
  {name:'Samsi',origin:{en:'Samsi brand colours',th:'สีประจำแบรนด์ Samsi'},
   line:{en:'is this brand, actually.',th:'คือสีของแบรนด์นี้เอง'},
-  surface:'#FEF6EA',raised:'#FFFFFF',sunken:'#F1EADE',border:'#E0D8CE',ink:'#022A1A',muted:'#395748',accent:'#E8603E',quiet:'#FADECE'},
+  surface:'#FEF6EA',raised:'#FFFFFF',sunken:'#F1EADE',border:'#E0D8CE',ink:'#022A1A',muted:'#395748',accent:'#E8603E',quiet:'#FADECE',second:'#0246EE'},
  {name:'Signal',origin:{en:'Cloud Dancer + Luminous Blue',th:'Cloud Dancer + Luminous Blue'},
   line:{en:'came from one prompt.',th:'มาจากพรอมต์เดียว'},
   surface:'#F0EEE9',raised:'#FFFFFF',sunken:'#E6E3DC',border:'#D6D2C8',ink:'#14161C',muted:'#4E5364',accent:'#1E3FCB',quiet:'#E2E6F7'},
@@ -424,6 +424,7 @@ function applyTheme(t){
              '--ink':t.ink,'--muted':t.muted,'--accent':t.accent,'--quiet':t.quiet,'--accent-text':inv};
   for(const k in map) root.style.setProperty(k,map[k]);
   root.style.setProperty('--accent-ink', textSafe(t.accent,t.surface));
+  root.style.setProperty('--second-ink', textSafe(t.second||t.accent,t.surface));
   document.getElementById('themeName').textContent=t.name;
   document.getElementById('themeOrigin').textContent=t.origin[lang];
   document.getElementById('heroLine').textContent=t.line[lang];
