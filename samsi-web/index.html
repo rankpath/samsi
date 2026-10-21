@@ -1230,6 +1230,8 @@ const lum=h=>{h=h.replace('#','');
   return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2];};
 const ratio=(a,b)=>{const l=[lum(a),lum(b)].sort((x,y)=>y-x);return (l[0]+0.05)/(l[1]+0.05);};
 const bestText=bg=>ratio('#FFFFFF',bg)>=ratio('#14161C',bg)?'#FFFFFF':'#14161C';
+/* link colour: the accent itself when it clears 4.5:1 on the surface, otherwise the ink */
+const textSafe=(accent,surface)=>ratio(accent,surface)>=4.5?accent:getComputedStyle(root).getPropertyValue('--ink').trim()||'#14161C';
 
 /* ---------------- copy ---------------- */
 const T={
@@ -1313,7 +1315,7 @@ const T={
 const THEMES=[
  {name:'Samsi',origin:{en:'Samsi brand colours',th:'สีประจำแบรนด์ Samsi'},
   line:{en:'is this brand, actually.',th:'คือสีของแบรนด์นี้เอง'},
-  surface:'#FAF8F4',raised:'#FFFFFF',sunken:'#EFEBE3',border:'#DFDAD0',ink:'#1E3A2C',muted:'#464E45',accent:'#E9654B',quiet:'#FBE3DC'},
+  surface:'#FEF6EA',raised:'#FFFFFF',sunken:'#F1EADE',border:'#E0D8CE',ink:'#022A1A',muted:'#395748',accent:'#E8603E',quiet:'#FADECE'},
  {name:'Signal',origin:{en:'Cloud Dancer + Luminous Blue',th:'Cloud Dancer + Luminous Blue'},
   line:{en:'came from one prompt.',th:'มาจากพรอมต์เดียว'},
   surface:'#F0EEE9',raised:'#FFFFFF',sunken:'#E6E3DC',border:'#D6D2C8',ink:'#14161C',muted:'#4E5364',accent:'#1E3FCB',quiet:'#E2E6F7'},
