@@ -20,7 +20,7 @@ def steps(block):
 
 CATS = re.findall(r"\{c:\{en:'([^']*)',th:'([^']*)'\}", src)
 
-DOMAIN = 'https://example.com'   # <-- replace with the real domain before launch
+DOMAIN = 'https://samsi.thaitastic.net'
 
 OTHER = {'th': ('en', 'English'), 'en': ('th', 'ไทย')}
 
